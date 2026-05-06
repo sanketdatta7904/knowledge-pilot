@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+
+# Virtual env
+.venv/
+
+# Environment
+.env
+
+# uv
+uv.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Caches
+.pytest_cache/
+.ruff_cache/
+
+# Output
+*.xlsx
+!examples/*.xlsx
