@@ -1,7 +1,8 @@
 import os
+import time
 from typing import TypeVar, Type
 
-from anthropic import Anthropic
+from anthropic import Anthropic, APIStatusError
 from pydantic import BaseModel
 
 T = TypeVar("T", bound=BaseModel)
@@ -24,7 +25,7 @@ def call_llm(
     user: str,
     response_model: Type[T],
     *,
-    max_retries: int = 2,
+    max_retries: int = 5,
 ) -> T:
     """Call Claude with forced tool-use to get a Pydantic-validated response."""
     schema = response_model.model_json_schema()
@@ -47,6 +48,14 @@ def call_llm(
             )
             tool_block = next(b for b in resp.content if b.type == "tool_use")
             return response_model.model_validate(tool_block.input)
+        except APIStatusError as e:
+            last_err = e
+            if e.status_code in (429, 529) and attempt < max_retries:
+                wait = 2 ** attempt  # 1, 2, 4, 8, 16 seconds
+                print(f"    [llm] overloaded, retrying in {wait}s...", flush=True)
+                time.sleep(wait)
+                continue
+            raise
         except Exception as e:
             last_err = e
             if attempt == max_retries:
