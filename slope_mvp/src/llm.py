@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 T = TypeVar("T", bound=BaseModel)
 
-MODEL = os.environ.get("CLAUDE_MODEL", "claude-sonnet-4-5-20250514")
+MODEL = os.environ.get("CLAUDE_MODEL", "claude-sonnet-4-5")
 MAX_TOKENS = 8192
 
 _client: Anthropic | None = None
