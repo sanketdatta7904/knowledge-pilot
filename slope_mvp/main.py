@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 
 from dotenv import load_dotenv
 
@@ -6,7 +7,7 @@ from src.pipeline import run
 
 
 def main():
-    load_dotenv()
+    load_dotenv(Path(__file__).parent / ".env")
 
     parser = argparse.ArgumentParser(description="Math textbook → competency hierarchy Excel")
     parser.add_argument("--input", required=True, help="Path to PDF or text file")
